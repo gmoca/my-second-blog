@@ -1,8 +1,9 @@
 from typing import re
 
 from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login
-from  django.contrib.auth.decorators import login_required
+from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
 from .forms import RegistroUserForm
@@ -80,3 +81,8 @@ def login_view(request):
                 return render((request, 'accounts/login', {'mensaje': mensaje}))
         mensaje = 'Nombre de usuario o contraseña no valido'
     return render(request, 'accounts/login.html', {'mensaje':mensaje})
+
+def logout_view(request):
+    logout(request)
+    messages.success(request, 're has desconectado con exito')
+    return redirect(reversed('accounts.login'))
