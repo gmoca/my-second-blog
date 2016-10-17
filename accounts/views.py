@@ -1,5 +1,3 @@
-from typing import re
-
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
@@ -84,5 +82,5 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    messages.success(request, 're has desconectado con exito')
-    return redirect(reversed('accounts.login'))
+    messages.success(request, 'te has desconectado con exito')
+    return redirect(reverse('accounts.login'))
