@@ -1,11 +1,13 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.hashers import make_password
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from django.contrib.auth.models import User
 from django.core.urlresolvers import reverse
-from .forms import RegistroUserForm
+from .forms import RegistroUserForm, EditarEmailForm, EditarContrasenaForm
 from .models import UserProfile
+
 
 def registro_usuario_view(request):
     if request.method == 'POST':
@@ -42,21 +44,25 @@ def registro_usuario_view(request):
             #  Pero lo hacemos con un redirect.
             return redirect(reverse('accounts.gracias', kwargs={'username': username}))
     else:
-        # Si el mthod es GET, instanciamos un objeto RegistroUserForm vacio
+        # Si el method es GET, instanciamos un objeto RegistroUserForm vacio
         form = RegistroUserForm()
         # Creamos el contexto
     context = {
         'form': form
     }
-        # Y mostramos los datos
+    # Y mostramos los datos
     return render(request, 'accounts/registro.html', context)
 
+
 def gracias_view(request, username):
-    return render(request, 'accounts/gracias.html', {'username':username})
+    return render(request, 'accounts/gracias.html', {'username': username})
+
 
 @login_required
 def index_view(request):
+    print(request.user.userprofile.photo)
     return render(request, 'accounts/index.html')
+
 
 def login_view(request):
     # Si el usuario esta ya logueado, lo redireccionamos a index_view
@@ -70,17 +76,55 @@ def login_view(request):
         if user is not None:
             if user.is_active:
                 login(request, user)
-                return  redirect(reverse('accounts.index'))
+                return redirect(reverse('accounts.index'))
             else:
                 # Redireccionar informando que la cuenta esta inactiva
                 #  Lo dejo como ejercicio al lector :)
                 mensaje = 'la cuenta esta inactiva'
-                #return redirect(reverse('accounts.index', kwargs={'mensaje':mensaje}))
-                return render((request, 'accounts/login', {'mensaje': mensaje}))
+                # return redirect(reverse('accounts.index', kwargs={'mensaje':mensaje}))
+                return render(request, 'accounts/login', {'mensaje': mensaje})
         mensaje = 'Nombre de usuario o contraseña no valido'
-    return render(request, 'accounts/login.html', {'mensaje':mensaje})
+    return render(request, 'accounts/login.html', {'mensaje': mensaje})
+
 
 def logout_view(request):
     logout(request)
     messages.success(request, 'te has desconectado con exito')
     return redirect(reverse('accounts.login'))
+
+
+@login_required
+def editar_email(request):
+    if request.method == 'POST':
+        form = EditarEmailForm(request.POST, request=request)
+        if form.is_valid():
+            request.user.email = form.cleaned_data['email']
+            request.user.save()
+            messages.success(request, 'El email ha sido cambiado con exito.')
+            return redirect(reverse('accounts.index'))
+    else:
+        form = EditarEmailForm(
+            request=request,
+            initial={'email': request.user.email})
+    # return render(request, 'accounts/editar_email.html', {'form': form, 'titulo':'email'})
+    return render(request, 'accounts/editar_x.html', {'form': form, 'titulo': 'Email'})
+
+
+@login_required
+def editar_contrasena(request):
+    print(request)
+    if request.method == 'POST':
+        form = EditarContrasenaForm(request.POST, request=request)
+        if form.is_valid():
+            request.user.password = make_password(form.cleaned_data['password'])
+            request.user.save()
+            messages.success(request, 'La contraseña ha sido cambiada con exito!.')
+            messages.success(request, 'Es necesario introducir los datos para entrar.')
+            return redirect(reverse('accounts.index'))
+    else:
+        form = EditarContrasenaForm(
+            request=request,
+            initial={'username': request.user.username}
+        )
+    # return render(request,'accounts/editar_contrasena.html', {'form':form , 'titulo':'contraseña'})
+    return render(request, 'accounts/editar_x.html', {'form': form, 'titulo': 'Contraseña'})
