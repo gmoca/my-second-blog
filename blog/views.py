@@ -6,6 +6,15 @@ from django.views import generic
 
 # def article_list_view(generic.ListView):
 class ArticleListView(generic.ListView):
-    template_model = 'bloc/article_list.html'
+    paginate_by = 2
+    ordering = '-create_at'
+    template_model = 'blog/article_list.html'
     model = Article
     context_object_name = 'articles'
+
+
+class ArticleDetailView(generic.DetailView):
+    template_model = 'blog/article_detail.html'
+    model = Article
+    context_object_name = 'article'
+

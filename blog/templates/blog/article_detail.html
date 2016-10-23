@@ -1,0 +1,10 @@
+{% extends 'blog/base_blog.html' %}
+
+{% block title %}{{ article.title }}{% endblock title %}
+
+{% block blog_content %}
+    {% include 'blog/_article.html' %}
+    <div class="comentarios">
+        <!-- Aqui los comentarios -->
+    </div>
+{% endblock blog_content %}

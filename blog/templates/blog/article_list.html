@@ -2,7 +2,24 @@
 {% block title %}Blog - Lista de articulos{% endblock title %}
 {% block blog_content %}
     {% for article in articles %}
-        <h2>{{ article.title }}</h2>
-        <p>{{ article.body|safe }}</p>
+        {% include 'blog/_article.html' %}
     {% endfor %}
+    <nav>
+        {% if is_paginated %}
+            <ul class="pagination">
+                {% if page_obj.has_previous %}
+                    <li><a href="?page={{ page_obj.previous_page_number }}">&laquo;</a></li>
+                {% endif %}
+                {% for i in paginator.page_range %}
+                    <li {% if page_obj.number == i %} class="active" {% endif %}>
+                        <a href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                {% endfor %}
+                {% if page_obj.has_next %}
+                <li><a href="?page={{ page_obj.next_page_number }}">&raquo;</a></li>
+                {% endif %}
+            </ul>
+        {% endif %}
+    </nav>
+
 {% endblock blog_content %}
