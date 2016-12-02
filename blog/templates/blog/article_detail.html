@@ -4,6 +4,13 @@
 
 {% block blog_content %}
     {% include 'blog/_article.html' %}
+    {% if perms.article.can_change %}
+        <a href="{% url 'blog.editar' article.slug %}" class="btn btn-primary">Editar</a>
+    {% endif %}
+
+    {% if perms.article.can_delete %}
+        <a href="{% url 'blog.eliminar' article.slug %}" class="btn btn-danger">Eliminar</a>
+    {% endif %}
     <div class="comentarios">
         <!-- Aqui los comentarios -->
     </div>

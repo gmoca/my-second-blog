@@ -2,6 +2,7 @@
 {% block title %}Blog - Lista de articulos{% endblock title %}
 {% block blog_content %}
     {% for article in articles %}
+        <!-- read_more -->
         {% include 'blog/_article.html' %}
     {% endfor %}
     <nav>

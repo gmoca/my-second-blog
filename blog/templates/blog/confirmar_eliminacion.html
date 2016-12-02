@@ -1,0 +1,11 @@
+{% extends 'blog/base_blog.html' %}
+{% block title %}Confirmar la eliminación{% endblock title %}
+{% block blog_content %}
+<h2 class="page-header">Confirmacion para eliminar {{ article.title }}</h2>
+<form method="post" action="">
+    {% csrf_token %}
+    <p>¿Seguro que quieres eliminar el articulo {{ article.title }}?</p>
+    <button type="submit" class="btn btn-danger">Si, eliminar</button>
+    <a href="{% url 'blog.article_detail' article.slug %}" class="btn btn-success">Cancelar</a>
+</form>
+{% endblock blog_content %}

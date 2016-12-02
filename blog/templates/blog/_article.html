@@ -3,7 +3,6 @@
 {% else %}
     <h2>{{ article.title }}</h2>
 {% endif %}
-
 <div class="article-info">
     <small>
         <strong>Por: </strong>{{ article.owner.username }}
@@ -11,7 +10,11 @@
         <strong>El: </strong>{{ article.create_at|date:'d F Y' }}
     </small><hr>
 </div>
-<p>{{ article.body|safe }}</p>
+{% if article %}
+    <p>{{ article.body|safe }}</p>
+{% else %}
+    <p>{{ article.body|safe }}</p>
+{% endif %}
 <div class="article-footer">
     <strong>Etiquetas: </strong>{{ article.get_string_tags }}
 </div>

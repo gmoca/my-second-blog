@@ -1,7 +1,9 @@
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.text import slugify
 from django.contrib.auth.models import User
 # Create your models here.
+
 
 class Tag(models.Model):
     name = models.CharField(max_length=100, unique=True)
@@ -20,7 +22,8 @@ class Tag(models.Model):
 
 
 class Article(models.Model):
-    title = models.CharField(max_length=100, unique=True)
+    # title = models.CharField(max_length=100, unique=True)
+    title = models.CharField(max_length=100, unique=True, verbose_name='titulo')
     slug = models.CharField(max_length=100, unique=True)
     body = models.TextField()
     owner = models.ForeignKey(User, related_name='article_owner')
@@ -42,3 +45,5 @@ class Article(models.Model):
         self.slug = slugify(self.title)
         return super().save(*args, **kwargs)
 
+    def get_absolute_url(self):
+        return reverse('blog.article_detail', kwargs={'slug': self.slug})
